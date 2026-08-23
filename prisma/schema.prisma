@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Seller {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  city      String
+  bio       String
+  createdAt DateTime @default(now())
+  books     Book[]
+  reviews   Review[]
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  author      String
+  category    String
+  condition   String
+  description String
+  priceCents  Int
+  imageUrl    String
+  sellerId    String
+  seller      Seller   @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  sellerId   String
+  seller     Seller   @relation(fields: [sellerId], references: [id])
+  authorName String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  email           String
+  totalCents      Int
+  status          String      @default("pending")
+  stripeSessionId String?
+  createdAt       DateTime    @default(now())
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  orderId    String
+  order      Order  @relation(fields: [orderId], references: [id])
+  bookId     String
+  title      String
+  priceCents Int
+  quantity   Int
+}
