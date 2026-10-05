@@ -2,6 +2,8 @@
 
 > A bilingual second-hand book marketplace with photo listings, search, a cart and Stripe test checkout, painted in the ividi.dev palette (black, burnt orange, amber).
 
+[![CI](https://github.com/VidiPT89/UsedBookMarket/actions/workflows/ci.yml/badge.svg)](https://github.com/VidiPT89/UsedBookMarket/actions/workflows/ci.yml)
+
 [🐞 Report Bug](https://github.com/VidiPT89/UsedBookMarket/issues) · [✨ Request Feature](https://github.com/VidiPT89/UsedBookMarket/issues)
 
 Used Book Market is a Next.js stall for volumes that already have a previous reader. List a book with a photograph, filter the shelf by title, author or category, review a seller, and pay through Stripe in test mode. Cloudinary holds the covers when configured; otherwise photos stay on disk. The UI is European Portuguese / English, with the language toggle remembered in `localStorage`.
