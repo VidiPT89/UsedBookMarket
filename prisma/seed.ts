@@ -8,10 +8,10 @@ const covers = {
   poetry:
     'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=800&q=80',
   comics:
-    'https://images.unsplash.com/photo-1618519764620-7401607768d7?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=800&q=80',
   kids: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80',
   academic:
-    'https://images.unsplash.com/photo-14565130808-0b3ff7d94d78?auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=800&q=80',
   essay:
     'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80',
 }
