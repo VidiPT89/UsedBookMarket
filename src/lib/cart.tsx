@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from 'react'
 
 export type CartLine = {
   bookId: string
@@ -22,22 +22,43 @@ type Ctx = {
 
 const CartContext = createContext<Ctx | null>(null)
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<CartLine[]>([])
+// The cart lives in localStorage and is read through useSyncExternalStore: no setState in an
+// effect, an empty cart on the server, and other tabs stay in sync through the storage event.
+const EMPTY: CartLine[] = []
+const listeners = new Set<() => void>()
+let cachedRaw: string | null = null
+let cachedLines: CartLine[] = EMPTY
 
-  useEffect(() => {
-    const raw = localStorage.getItem(STORAGE)
-    if (!raw) return
+function subscribe(onChange: () => void) {
+  listeners.add(onChange)
+  window.addEventListener('storage', onChange)
+  return () => {
+    listeners.delete(onChange)
+    window.removeEventListener('storage', onChange)
+  }
+}
+
+function readLines(): CartLine[] {
+  const raw = localStorage.getItem(STORAGE)
+  if (raw !== cachedRaw) {
+    cachedRaw = raw
     try {
-      setLines(JSON.parse(raw) as CartLine[])
+      cachedLines = raw ? (JSON.parse(raw) as CartLine[]) : EMPTY
     } catch {
-      setLines([])
+      cachedLines = EMPTY
     }
-  }, [])
+  }
+  return cachedLines
+}
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE, JSON.stringify(lines))
-  }, [lines])
+function setLines(update: CartLine[] | ((prev: CartLine[]) => CartLine[])) {
+  const next = typeof update === 'function' ? update(readLines()) : update
+  localStorage.setItem(STORAGE, JSON.stringify(next))
+  listeners.forEach((notify) => notify())
+}
+
+export function CartProvider({ children }: { children: ReactNode }) {
+  const lines = useSyncExternalStore(subscribe, readLines, () => EMPTY)
 
   const value = useMemo<Ctx>(
     () => ({
